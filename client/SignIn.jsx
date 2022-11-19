@@ -1,4 +1,3 @@
-import { response } from "express";
 import React from "react";
 import { Link } from 'react-router-dom';
 
@@ -14,11 +13,10 @@ function SignIn() {
     let dataArr;
 
     // automatically, the method property value is 'GET'. 
-    fetch('/api') 
+    fetch('/api/signin') 
       .then((response) => response.json())
       .then((data) => {
-        console.log('Data from fetch api \n\n\n\n\n\n *********\n', data);
-        dataArr = response.body; 
+        console.log(data.body)
       })
   }
 

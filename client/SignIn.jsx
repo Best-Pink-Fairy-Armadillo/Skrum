@@ -16,7 +16,7 @@ function SignIn() {
     fetch('/api/signin') 
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.body)
+        console.log(data)
       })
   }
 

@@ -22,12 +22,30 @@ app.post('/api/signup', controller.createUser, (req, res) => {
   res.status(200).json(res.locals);
 });
 
+app.get('/api/signin', controller.verifyUser, (req, res) => {
+  res.status(200).json(res.locals);
+});
+
+// app.post('/api/createTask', controller.createTask, (req, res) => {
+//   res.status(200).json(res.locals);
+// });
+
+// app.delete('/api/deleteTask', controller.deleteTask, (req, res) => {
+//   res.status(200).json(res.locals);
+// });
+
+// app.patch('/editTask', controller.editTask, (req, res) => {
+//   res.status(200).json(res.locals);
+// });
+// serve html and css
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '../index.html'));
 });
 app.use('/style.css', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '../style.css'));
 });
+
+//catch 404
 app.use((req, res) => {
   res.status(404).json('404 Page not found');
 });

@@ -1,9 +1,8 @@
 const db = require('./models');
-require('dotenv').config();
 
 let controller = {
   createUser: async (req, res, next) => {
-    const testQuery = 'SELECT id FROM users WHERE username=$1';
+    const testQuery = 'SELECT id FROM users WHERE username=$1;';
     // hardcoding group_id, can change later
     const queryString =
       'INSERT INTO users (USERNAME, PASSWORD, GROUP_ID) VALUES ($1, $2, 1);';
@@ -26,13 +25,22 @@ let controller = {
       });
     }
   },
+
   verifyUser: async (req, res, next) => {
     const { username, password } = req.body;
-    const testQuery = 'SELECT * FROM users WHERE username=$1 and password=$2';
+    const testQuery = 'SELECT * FROM users WHERE username=$1 and password=$2;';
+    const taskQuery = 'SELECT * FROM grouptasks WHERE id=$1;';
     try {
       const verification = await db.query(testQuery, [username, password]);
-      if (verification[0]) {
-        res.locals = { signin: 'Login success' };
+      if (verification.rows[0]) {
+        const groupId = verification.rows[0].group_id;
+        const userTasks = await db.query(taskQuery, [groupId]);
+        //console.log(userTasks);
+        res.locals = { signin: 'Login success', tasks: userTasks.rows };
+      } else {
+        res.locals = {
+          error: 'Login attempt unsuccessful',
+        };
       }
     } catch (error) {
       return next({
@@ -43,6 +51,17 @@ let controller = {
     }
     next();
   },
-};
 
+  //   createTask: async (req, res, next) => {
+  //     const taskCreate = ''
+  //     try{
+
+  //       next();
+  //     }catch{
+
+  //     }
+  //   }
+
+  // };
+};
 module.exports = controller;

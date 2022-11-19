@@ -1,6 +1,6 @@
 import React from 'react'
 import {render} from 'react-dom'
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, Link } from 'react-router-dom';
 import Home from './Home.jsx';
 import SignIn from './SignIn.jsx';
 import SignUp from './SignUp.jsx';

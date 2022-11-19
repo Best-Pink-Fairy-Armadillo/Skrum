@@ -52,16 +52,16 @@ let controller = {
     next();
   },
 
-  //   createTask: async (req, res, next) => {
-  //     const taskCreate = ''
-  //     try{
+    createTask: async (req, res, next) => {
+      const taskCreate = ''
+      try{
 
-  //       next();
-  //     }catch{
+        next();
+      }catch{
 
-  //     }
-  //   }
+      }
+    }
 
-  // };
-};
+  };
+
 module.exports = controller;

@@ -22,7 +22,7 @@ app.post('/api/signup', controller.createUser, (req, res) => {
   res.status(200).json(res.locals);
 });
 
-app.get('/api/signin', controller.verifyUser, (req, res) => {
+app.post('/api/signin', controller.verifyUser, (req, res) => {
   res.status(200).json(res.locals);
 });
 

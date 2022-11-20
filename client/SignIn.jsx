@@ -23,8 +23,8 @@ function SignIn() {
     console.log('reqbody', reqBody);
 
     // automatically, the method property value is 'GET'. 
-    fetch('http://localhost:8080/api/signin', {
-      method: 'GET',
+    fetch('api/signin', {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -32,7 +32,7 @@ function SignIn() {
     }) 
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        console.log('the data has been fetched!', data);
         navigate('/profile');
       })
       .catch((err) => {

@@ -1,33 +1,39 @@
 const db = require('./models');
+const createError = require('./createError');
 
 let controller = {
   createUser: async (req, res, next) => {
-    const testQuery = 'SELECT id FROM users WHERE username=$1;';
+    const testQuery = 'SELECT * FROM users WHERE username=$1;';
     // hardcoding group_id, can change later
     const queryString =
-      'INSERT INTO users (USERNAME, PASSWORD, GROUP_ID) VALUES ($1, $2, 1);';
+      'INSERT INTO users (USERNAME, PASSWORD, GROUP_ID) VALUES ($1, $2, $3);';
+    const taskQuery = 'SELECT * FROM grouptasks WHERE id=$1;';
+    const groupId = 1;
     const { username, password } = req.body;
     console.log(username);
     try {
       const userExists = await db.query(testQuery, [username]);
-      if (!userExists[0]) {
-        const newUser = await db.query(queryString, [username, password]);
-        res.locals = { signin: 'User successfully created' };
-      } else if (userExists[0]) {
+      if (!userExists.rows[0]) {
+        const newUser = await db.query(queryString, [
+          username,
+          password,
+          groupId,
+        ]);
+        const userTasks = await db.query(taskQuery, [groupId]);
+        //console.log(userTasks);
+        res.locals = { signin: 'User created', tasks: userTasks.rows };
+      } else if (userExists.rows[0]) {
         res.locals = { error: 'username not available' };
       }
       return next();
     } catch (error) {
-      return next({
-        log: `Express error handler caught createUser middlware error: ${error}`,
-        status: 409,
-        message: { err: 'An error occurred' },
-      });
+      return next(createError(error, 'createUser'));
     }
   },
 
   verifyUser: async (req, res, next) => {
     const { username, password } = req.body;
+    console.log(req.body);
     const testQuery = 'SELECT * FROM users WHERE username=$1 and password=$2;';
     const taskQuery = 'SELECT * FROM grouptasks WHERE id=$1;';
     try {
@@ -42,26 +48,88 @@ let controller = {
           error: 'Login attempt unsuccessful',
         };
       }
+      return next();
     } catch (error) {
-      return next({
-        log: `Express error handler caught verifyUser middlware error: ${error}`,
-        status: 409,
-        message: { err: 'An error occurred' },
-      });
+      return next(createError(error, 'verifyUser'));
     }
-    next();
+    // next();
+  },
+  // * setSSIDCookie - store the user id in a cookie
+  // */
+  setSSIDCookie: async (req, res, next) => {
+    // write code here
+    try {
+      console.log(res.locals);
+      if (res.locals.signin) {
+        let createDbSession =
+          'INSERT INTO sessions (cookie, username) VALUES ($1, $2);'; // add SQL syntax to add new session_id and cookie_id
+        // create random number for cookie
+        const randomCookie = Math.floor(Math.random() * 500);
+        const { username } = req.body;
+        console.log('hi');
+        const sessionId = await db.query(createDbSession, [
+          randomCookie,
+          username,
+        ]);
+        console.log(sessionId);
+        res.cookie('ssid', randomCookie, {
+          httpOnly: true,
+        });
+      }
+      return next();
+    } catch (error) {
+      return next(createError(error, 'setSSIDCookie'));
+    }
   },
 
-  //   createTask: async (req, res, next) => {
-  //     const taskCreate = ''
-  //     try{
+  isLoggedIn: async (req, res, next) => {
+    // write code here
+    const sessionQuery =
+      'SELECT * FROM sessions WHERE cookie=$1 AND username=$2;';
+    const { ssid } = req.cookies;
+    const { username } = req.body;
+    console.log(ssid, username);
+    try {
+      const session = await db.query(sessionQuery, [ssid, username]);
+      console.log(session);
+      if (session.rows[0]) res.locals = { signin: 'Authenticated' };
+      else res.locals = { error: 'Not Authenticated' };
+      return next();
+    } catch (error) {
+      return next(createError(error, 'isLoggedIn'));
+    }
+  },
 
-  //       next();
-  //     }catch{
-
-  //     }
-  //   }
-
-  // };
+  createTask: async (req, res, next) => {
+    const taskCreate =
+      'INSERT INTO grouptasks (urgency, name, text, status) VALUES ($1, $2, $3, $4);';
+    const { urgency, name, text, status } = req.body;
+    try {
+      const newTask = await db.query(taskCreate, [urgency, name, text, status]);
+      const newTaskList = await db.query('SELECT * FROM grouptasks;');
+      console.log(newTaskList);
+      res.locals.tasks = newTaskList.rows;
+      return next();
+    } catch (error) {
+      return next(createError(error, 'createTask'));
+    }
+  },
 };
+/**
+};
+/**
+ * startSession - create and save a new Session into the database.
+ */
+//   StartSession: (req, res, next) => {
+//     //write code here
+//     const id = res.locals.user._id;
+//     // console.log(id);
+//     Session.create({
+//       cookieId: id,
+//     }).then(() => {
+//       return next();
+//     });
+//   },
+// };
+
 module.exports = controller;

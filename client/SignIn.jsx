@@ -46,13 +46,13 @@ function SignIn() {
   // change up the password to make the text not visible
   // give both signin and signup access to go to either side
   return (
-    <div className="signin">
+    <div className='signin'>
       <p>hello sign in page</p>
       <textarea id="username" placeholder="username"></textarea>
       <textarea id="password" placeholder="password"></textarea>
       <button onClick={clickHandler}>Sign In</button>
     </div>
-  )
+  );
 }
 
 export default SignIn;

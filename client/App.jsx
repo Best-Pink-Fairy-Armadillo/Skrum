@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, Link } from 'react
 import Home from './Home.jsx';
 import SignIn from './SignIn.jsx';
 import SignUp from './SignUp.jsx';
-
+import Profile from './Profile.jsx';
 
 function App() {
 
@@ -14,6 +14,7 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/signin' element={<SignIn />} />
         <Route path='/signup' element={<SignUp />} />
+        <Route path='/profile' element={< Profile />} />
       </Routes>
     </Router>
   )

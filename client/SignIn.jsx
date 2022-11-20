@@ -1,8 +1,10 @@
 import React from "react";
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function SignIn() {
   // have a link to sign up page
+  let navigate = useNavigate();
+
   const clickHandler = () => {
     console.log('hi');
     // get request and the response from it should be a good or bad
@@ -10,23 +12,42 @@ function SignIn() {
     // go to the user profile 
       // inside that user profile... it will be populated with the stuff
     
-    let dataArr;
+    const user = document.querySelector('#username').value;
+    const pass = document.querySelector('#password').value;
+
+    const reqBody = {
+      username: user,
+      password: pass
+    };
+
+    console.log('reqbody', reqBody);
 
     // automatically, the method property value is 'GET'. 
-    fetch('/api/signin') 
+    fetch('http://localhost:8080/api/signin', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(reqBody)
+    }) 
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
+        console.log(data);
+        navigate('/profile');
+      })
+      .catch((err) => {
+        window.location.reload(true);
+        alert('You bozo, that\'s the wrong password/username');
       })
   }
-
+  
   // expect response.body.tasks from fetching to be an array--
 
   return (
     <div className="signin">
       <p>hello sign in page</p>
-      <textarea placeholder="username"></textarea>
-      <textarea placeholder="password"></textarea>
+      <textarea id="username" placeholder="username"></textarea>
+      <textarea id="password" placeholder="password"></textarea>
       <button onClick={clickHandler}>Sign In</button>
     </div>
   )

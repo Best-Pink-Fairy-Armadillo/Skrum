@@ -40,9 +40,14 @@ app.post(
   }
 );
 
-app.post('/api/createTask', controller.createTask, (req, res) => {
-  res.status(200).json(res.locals);
-});
+app.post(
+  '/api/createTask',
+  controller.isLoggedIn,
+  controller.createTask,
+  (req, res) => {
+    res.status(200).json(res.locals);
+  }
+);
 
 // app.delete('/api/deleteTask', controller.deleteTask, (req, res) => {
 //   res.status(200).json(res.locals);

@@ -88,9 +88,11 @@ let controller = {
       'SELECT * FROM sessions WHERE cookie=$1 AND username=$2;';
     const { ssid } = req.cookies;
     const { username } = req.body;
+    console.log(ssid, username);
     try {
       const session = await db.query(sessionQuery, [ssid, username]);
-      if (session[0]) res.locals = { signin: 'Authenticated' };
+      console.log(session);
+      if (session.rows[0]) res.locals = { signin: 'Authenticated' };
       else res.locals = { error: 'Not Authenticated' };
       return next();
     } catch (error) {
@@ -99,9 +101,15 @@ let controller = {
   },
 
   createTask: async (req, res, next) => {
-    const taskCreate = '';
+    const taskCreate =
+      'INSERT INTO grouptasks (urgency, name, text, status) VALUES ($1, $2, $3, $4);';
+    const { urgency, name, text, status } = req.body;
     try {
-      next();
+      const newTask = await db.query(taskCreate, [urgency, name, text, status]);
+      const newTaskList = await db.query('SELECT * FROM grouptasks;');
+      console.log(newTaskList);
+      res.locals.tasks = newTaskList.rows;
+      return next();
     } catch (error) {
       return next(createError(error, 'createTask'));
     }

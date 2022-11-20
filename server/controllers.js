@@ -1,19 +1,28 @@
 const db = require('./models');
 const createError = require('./createError');
+
 let controller = {
   createUser: async (req, res, next) => {
-    const testQuery = 'SELECT id FROM users WHERE username=$1;';
+    const testQuery = 'SELECT * FROM users WHERE username=$1;';
     // hardcoding group_id, can change later
     const queryString =
-      'INSERT INTO users (USERNAME, PASSWORD, GROUP_ID) VALUES ($1, $2, 1);';
+      'INSERT INTO users (USERNAME, PASSWORD, GROUP_ID) VALUES ($1, $2, $3);';
+    const taskQuery = 'SELECT * FROM grouptasks WHERE id=$1;';
+    const groupId = 1;
     const { username, password } = req.body;
     console.log(username);
     try {
       const userExists = await db.query(testQuery, [username]);
-      if (!userExists[0]) {
-        const newUser = await db.query(queryString, [username, password]);
-        res.locals = { signin: 'User successfully created' };
-      } else if (userExists[0]) {
+      if (!userExists.rows[0]) {
+        const newUser = await db.query(queryString, [
+          username,
+          password,
+          groupId,
+        ]);
+        const userTasks = await db.query(taskQuery, [groupId]);
+        //console.log(userTasks);
+        res.locals = { signin: 'User created', tasks: userTasks.rows };
+      } else if (userExists.rows[0]) {
         res.locals = { error: 'username not available' };
       }
       return next();

@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from 'react-router-dom';
 
-function SignIn() {
+function SignIn(props) {
   // have a link to sign up page
   let navigate = useNavigate();
 
@@ -32,7 +32,9 @@ function SignIn() {
     }) 
       .then((response) => response.json())
       .then((data) => {
-        console.log('the data has been fetched!', data);
+        console.log('the data has been fetched! display data.tasks: ', data.tasks);
+        props.populateTasks(data.tasks);
+        props.getUser(reqBody.username);
         navigate('/profile');
       })
       .catch((err) => {

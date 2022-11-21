@@ -114,6 +114,20 @@ let controller = {
       return next(createError(error, 'createTask'));
     }
   },
+
+  getTasks: async (req, res, next) => {
+    const taskGetAll = 'SELECT * FROM grouptasks;';
+    try {
+      const allTasks = await db.query(taskGetAll);
+      res.locals.allTasks = allTasks.rows;
+      return next();
+    }
+    catch (error) {
+      return next(createError(error, 'getTasks'));
+    }
+  },
+
+
 };
 /**
 };

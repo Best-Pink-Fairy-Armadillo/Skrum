@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Task from '../components/Task.jsx';
 
 function Profile(props) {
   const tasks = props.tasks;
@@ -10,6 +11,8 @@ function Profile(props) {
   // addTask method
 
   const addTask = () => {
+    console.log('clicked');
+
     // grab information about a new task (populated by user)-- (urgency, name, text, status) -- and put it into an array...
     const urgency = document.querySelector('#urgency').value;
     const name = document.querySelector('#name').value;
@@ -23,12 +26,13 @@ function Profile(props) {
       name: name,
       text: text,
       status: status,
+      username: username,
     };
 
     // conditions that check for the existence of urgenyc, name, text and status w/ urgency being a number
 
     // invoke props.getTasks(tasks)
-    props.getTasks(...tasks, newTask); // this will update the task state
+    props.getTasks(newTask); // this will update the task state
 
     // send a POST request to update database with latest task(s) body of: (urgency, name, text, status)
     // '/api/createTask' is the fetch req to be made..
@@ -66,11 +70,10 @@ function Profile(props) {
         const taskArrTypeCoerced = Object.entries(response);
         console.log('taskArray typecorededs', taskArrTypeCoerced);
         setTaskArr(JSON.stringify(taskArrTypeCoerced));
+        for (let i = 0; i < taskArrTypeCoerced.length; i++) {
+          taskArr.push(taskArrTypeCoerced[i]);
+        }
       });
-
-    for (let i = 0; i < taskArrTypeCoerced.length; i++) {
-      taskArr.push(taskArrTypeCoerced[i]);
-    }
   };
 
   // these two will be propped drilled down to tasks
@@ -89,6 +92,9 @@ function Profile(props) {
       <input id='status' placeholder='status'></input>
       <button onClick={addTask}>Add Task</button>
       <div>{taskArr}</div>
+      <div>
+        <Task />
+      </div>
       <button onClick={grabTasks}>Show Tasks</button>
     </div>
   );

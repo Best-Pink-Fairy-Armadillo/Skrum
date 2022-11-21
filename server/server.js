@@ -58,9 +58,14 @@ app.post(
   }
 );
 
-// app.delete('/api/deleteTask', controller.deleteTask, (req, res) => {
-//   res.status(200).json(res.locals);
-// });
+app.delete(
+  '/api/deleteTask',
+  controller.isLoggedIn,
+  controller.deleteTask,
+  (req, res) => {
+    res.status(200).json(res.locals);
+  }
+);
 
 app.patch(
   '/api/editTask',

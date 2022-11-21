@@ -84,6 +84,7 @@ let controller = {
 
   isLoggedIn: async (req, res, next) => {
     // write code here
+    console.log('hi');
     const sessionQuery =
       'SELECT * FROM sessions WHERE cookie=$1 AND username=$2;';
     const { ssid } = req.cookies;

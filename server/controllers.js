@@ -121,13 +121,43 @@ let controller = {
       const allTasks = await db.query(taskGetAll);
       res.locals.allTasks = allTasks.rows;
       return next();
-    }
-    catch (error) {
+    } catch (error) {
       return next(createError(error, 'getTasks'));
     }
   },
 
+  editTask: async (req, res, next) => {
+    const editTaskQuery =
+      'Update grouptasks SET urgency = $1, name = $2, text = $3, status = $4 WHERE id = $5;';
+    const getEditedTask = 'SELECT * FROM grouptasks WHERE id=$1;';
+    const { id, urgency, name, text, status } = req.body;
+    try {
+      const editTask = await db.query(editTaskQuery, [
+        urgency,
+        name,
+        text,
+        status,
+        id,
+      ]);
+      const gettingTask = await db.query(getEditedTask, [id]);
+      res.locals.task = gettingTask.rows[0];
+      return next();
+    } catch (error) {
+      return next(createError(error, 'editTasks'));
+    }
+  },
 
+  deleteTask: async (req, res, next) => {
+    const deleteTaskQ = 'DELETE FROM grouptasks WHERE id=$1;';
+    const { id } = req.body;
+    try {
+      const deletedTheTask = await db.query(deleteTaskQ, [id]);
+      res.locals.deleted = { deleted: `Task ${id} deleted!` };
+      return next();
+    } catch (error) {
+      return next(createError(error, 'deleteTask'));
+    }
+  },
 };
 /**
 };

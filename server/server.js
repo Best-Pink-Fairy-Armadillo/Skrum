@@ -49,13 +49,33 @@ app.post(
   }
 );
 
-// app.delete('/api/deleteTask', controller.deleteTask, (req, res) => {
-//   res.status(200).json(res.locals);
-// });
+app.post(
+  '/api/getTasks',
+  controller.isLoggedIn,
+  controller.getTasks,
+  (req, res) => {
+    res.status(200).json(res.locals.allTasks);
+  }
+);
 
-// app.patch('/editTask', controller.editTask, (req, res) => {
-//   res.status(200).json(res.locals);
-// });
+app.delete(
+  '/api/deleteTask',
+  controller.isLoggedIn,
+  controller.deleteTask,
+  (req, res) => {
+    res.status(200).json(res.locals);
+  }
+);
+
+app.patch(
+  '/api/editTask',
+  controller.isLoggedIn,
+  controller.editTask,
+  (req, res) => {
+    res.status(200).json(res.locals);
+  }
+);
+
 // serve html and css
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '../index.html'));

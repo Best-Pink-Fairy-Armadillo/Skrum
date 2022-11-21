@@ -42,7 +42,7 @@ setState(newestState)
         <Route path='/' element={<Home />} />
         <Route path='/signin' element={<SignIn populateTasks={populateTasks} getUser={getUser}/>} />
         <Route path='/signup' element={<SignUp />} />
-        <Route path='/profile' element={<Profile tasks={tasks} username={username} />} />
+        <Route path='/profile' element={<Profile tasks={tasks} username={username} getTasks={populateTasks} />} />
       </Routes>
     </Router>
   )

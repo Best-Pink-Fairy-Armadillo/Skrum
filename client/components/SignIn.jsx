@@ -32,17 +32,20 @@ function SignIn(props) {
     }) 
       .then((response) => response.json())
       .then((data) => {
-        console.log('the data has been fetched! display data.tasks: ', data.tasks);
-        props.populateTasks(data.tasks);
+        console.log('the data has been fetched! display data: ', data);
+        props.populateTasks(data);
+        console.log('is the data okay? display data.tasks: ', data.tasks)
         props.getUser(reqBody.username);
         navigate('/profile');
-      })
-      .catch((err) => {
-        window.location.reload(true);
-        alert('You bozo, that\'s the wrong password/username');
-      })
+      });
+      // .catch((err) => {
+      //   if (err) {
+      //     window.location.reload(true);
+      //     alert('You bozo, that\'s the wrong password/username');
+      //   }
+      // })
   }
-  
+
   // expect response.body.tasks from fetching to be an array--
 
   // change up the password to make the text not visible

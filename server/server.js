@@ -49,6 +49,14 @@ app.post(
   }
 );
 
+app.get(
+  '/api/getTasks',
+  controller.getTasks,
+  (req, res) => {
+    res.status(200).json(res.locals.allTasks)
+  }
+)
+
 // app.delete('/api/deleteTask', controller.deleteTask, (req, res) => {
 //   res.status(200).json(res.locals);
 // });
